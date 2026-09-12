@@ -29,12 +29,8 @@
       .page-heading { grid-column: 1 / -1; margin-bottom: 1.35rem; text-align: center; }
       .page-heading h1 { max-width: none; margin: 0; font-size: clamp(2.25rem, 4.4vw, 4.85rem); line-height: .9; }
       .page-heading .intro { max-width: none; margin: 16px auto 0; white-space: nowrap; }
-      .bowl-panel { position: relative; grid-column: 2; min-height: 0; }
-      .action-panel { display: flex; flex-direction: column; gap: 16px; grid-column: 3; align-self: center; justify-self: start; padding-left: clamp(16px, 3vw, 48px); }
-      .shake-button { min-width: 126px; padding: 15px 23px; cursor: pointer; border: 0; border-radius: 999px; background: var(--red); color: #fffaf1; box-shadow: 0 8px 0 #721714, 0 14px 22px #72171433; font: 700 .8rem ui-sans-serif, system-ui, sans-serif; letter-spacing: .12em; text-transform: uppercase; transition: transform .16s, box-shadow .16s; }
-      .shake-button:hover { transform: translateY(-2px); box-shadow: 0 10px 0 #721714, 0 16px 24px #72171433; }
-      .shake-button:active { transform: translateY(6px); box-shadow: 0 2px 0 #721714, 0 6px 12px #72171422; }
-      .shake-button:disabled { cursor: wait; opacity: .65; }
+      .bowl-panel { position: relative; display: flex; flex-direction: column; align-items: center; grid-column: 2; min-height: 0; }
+      .action-panel { display: flex; flex-direction: column; gap: 16px; grid-column: 3; align-self: start; justify-self: start; margin-top: clamp(145px, calc(11vw + 35px), 205px); padding-left: clamp(16px, 3vw, 48px); }
       .save-button { min-width: 126px; padding: 13px 23px; cursor: pointer; border: 1px solid var(--ink); border-radius: 999px; background: transparent; color: var(--ink); font: 700 .8rem ui-sans-serif, system-ui, sans-serif; letter-spacing: .12em; text-transform: uppercase; transition: color .16s, background .16s; }
       .save-button:hover { background: var(--ink); color: white; }
       .save-button:disabled { cursor: wait; opacity: .6; }
@@ -46,18 +42,14 @@
       .placed { position: absolute; z-index: 2; width: 22%; height: 27%; object-fit: contain; cursor: grab; filter: drop-shadow(0 5px 3px #61150e33); transform: translate(-50%, -50%); touch-action: none; user-select: none; }
       .placed:hover { z-index: 4; filter: drop-shadow(0 7px 4px #61150e55); }
       .placed.is-moving { z-index: 6; cursor: grabbing; filter: drop-shadow(0 10px 6px #61150e66); }
-      .bowl.is-shaking { animation: bowl-shake .72s ease-in-out; }
-      .placed.is-shaking { animation: ingredient-jiggle .12s linear infinite; }
-      @keyframes bowl-shake { 0%, 100% { transform: translateY(0) rotate(0); } 12% { transform: translateY(-16px) rotate(-1.1deg); } 25% { transform: translateY(9px) rotate(1deg); } 38% { transform: translateY(-13px) rotate(-.8deg); } 52% { transform: translateY(8px) rotate(.7deg); } 68% { transform: translateY(-6px) rotate(-.4deg); } 84% { transform: translateY(3px) rotate(.2deg); } }
-      @keyframes ingredient-jiggle { 0%, 100% { transform: translate(-50%, -50%) rotate(-3deg); } 50% { transform: translate(-50%, -50%) rotate(3deg); } }
-      .actions { position: absolute; z-index: 5; right: 1%; bottom: 2%; display: flex; align-items: center; gap: 10px; }
+      .actions { display: flex; align-items: center; gap: 10px; margin-top: 1rem; }
       .action { padding: 10px 15px; cursor: pointer; border: 1px solid var(--ink); border-radius: 999px; background: var(--paper); color: var(--ink); font: 700 .72rem ui-sans-serif, system-ui, sans-serif; letter-spacing: .08em; text-transform: uppercase; }
       .action:hover { background: var(--ink); color: white; }
-      .hint { position: absolute; z-index: 5; left: 5%; bottom: 4%; margin: 0; color: #806f5b; font: .74rem/1.3 ui-sans-serif, system-ui, sans-serif; }
+      .hint { width: 92%; margin: clamp(35px, 7vh, 88px) 0 0; color: #806f5b; font: .74rem/1.3 ui-sans-serif, system-ui, sans-serif; text-align: center; }
       .toast { position: fixed; z-index: 10; left: 50%; bottom: 28px; padding: 11px 17px; border-radius: 999px; background: var(--ink); color: white; font: .82rem ui-sans-serif, system-ui, sans-serif; opacity: 0; transform: translate(-50%, 12px); pointer-events: none; transition: opacity .2s, transform .2s; }
       .toast.show { opacity: 1; transform: translate(-50%, 0); }
       @media (max-width: 1080px) { main { grid-template-columns: minmax(200px, .8fr) minmax(420px, 1.5fr) minmax(200px, .8fr); } }
-      @media (max-width: 780px) { .page { padding-inline: 22px; } main { grid-template-columns: 1fr; gap: 24px; } .page-heading { order: -2; } .page-heading .intro { white-space: normal; } .bowl-panel { grid-column: auto; order: -1; min-height: 0; } .action-panel { grid-column: auto; justify-self: center; padding-left: 0; } .page-heading h1 { font-size: clamp(2.2rem, 11vw, 3.6rem); } .ingredients { max-width: none; grid-template-columns: repeat(5, 1fr); } .hint { display: none; } }
+      @media (max-width: 780px) { .page { padding-inline: 22px; } main { grid-template-columns: 1fr; gap: 24px; } .page-heading { order: -2; } .page-heading .intro { white-space: normal; } .bowl-panel { grid-column: auto; order: -1; min-height: 0; } .action-panel { grid-column: auto; justify-self: center; margin-top: 0; padding-left: 0; } .page-heading h1 { font-size: clamp(2.2rem, 11vw, 3.6rem); } .ingredients { max-width: none; grid-template-columns: repeat(5, 1fr); } .hint { display: block; width: 100%; margin-top: 35px; } }
       @media (max-width: 430px) { .ingredients { grid-template-columns: repeat(5, 1fr); } .bowl-panel { min-height: 330px; } }
     </style>
   </head>
@@ -82,14 +74,13 @@
           <div class="actions"><button class="action" id="clear" type="button">Clear bowl</button></div>
         </section>
         <aside class="action-panel" aria-label="Bowl action">
-          <button class="shake-button" id="shake" type="button">Shake</button>
           <button class="save-button" id="save" type="button">Save</button>
         </aside>
       </main>
     </div>
     <div class="toast" id="toast" role="status" aria-live="polite"></div>
     <script>
-      const items = ['IMG_0781.PNG','IMG_0783.png','IMG_0786.png','IMG_0794.PNG','IMG_0803.png','IMG_0805.png','IMG_0816.PNG','IMG_0834.png','IMG_0835.png','IMG_0836.png'];
+      const items = ['IMG_0781.png','IMG_0783.png','IMG_0786.png','IMG_0794.PNG','IMG_0803.png','IMG_0805.png','IMG_0816.PNG','IMG_0834.png','IMG_0835.png','IMG_0836.png'];
       const labels = items.map((file, i) => `Ingredient ${String(i + 1).padStart(2, '0')}`);
       const selected = new Set();
       const positions = new Map();
@@ -98,7 +89,6 @@
       const count = document.querySelector('#count');
       const bowlCopy = document.querySelector('#bowlCopy');
       const toast = document.querySelector('#toast');
-      const shakeButton = document.querySelector('#shake');
       const saveButton = document.querySelector('#save');
       let toastTimer;
 
@@ -156,47 +146,12 @@
       ['dragleave', 'drop'].forEach(type => dropZone.addEventListener(type, event => { event.preventDefault(); dropZone.classList.remove('is-over'); }));
       dropZone.addEventListener('drop', event => { const file = event.dataTransfer.getData('text/plain'); if (items.includes(file)) add(file, positionFromPointer(event)); });
       document.querySelector('#clear').addEventListener('click', () => { if (selected.size) { selected.clear(); positions.clear(); render(); } });
-      function bottomOfOval(x) {
-        const horizontal = Math.min(1, Math.abs((x - bowlArea.centerX) / bowlArea.radiusX));
-        return bowlArea.centerY + bowlArea.radiusY * Math.sqrt(1 - horizontal ** 2) - 1.5;
-      }
-      function shakeBowl() {
-        if (!selected.size) { notify('Add an ingredient before shaking the bowl.'); return; }
-        shakeButton.disabled = true;
-        saveButton.disabled = true;
-        document.querySelector('.bowl').classList.add('is-shaking');
-        const placed = [...dropZone.querySelectorAll('.placed')];
-        const start = new Map([...selected].map(file => [file, { ...positions.get(file) }]));
-        const targets = new Map([...selected].map(file => {
-          const initial = start.get(file);
-          return [file, { x: initial.x, y: bottomOfOval(initial.x) }];
-        }));
-        placed.forEach(image => image.classList.add('is-shaking'));
-        const duration = 980;
-        const startedAt = performance.now();
-        function animate(now) {
-          const progress = Math.min(1, (now - startedAt) / duration);
-          const fall = Math.max(0, (progress - .24) / .76);
-          const eased = 1 - (1 - fall) ** 3;
-          placed.forEach((image, index) => {
-            const file = image.dataset.file;
-            const from = start.get(file); const to = targets.get(file);
-            const wobble = (1 - progress) * Math.sin(progress * 52 + index * 2.3);
-            const x = from.x + (to.x - from.x) * eased + wobble * 1.15;
-            const y = from.y + (to.y - from.y) * eased + wobble * .7 - (1 - progress) * 1.8;
-            image.style.left = `${x}%`; image.style.top = `${y}%`;
-          });
-          if (progress < 1) { requestAnimationFrame(animate); return; }
-          targets.forEach((position, file) => positions.set(file, position));
-          document.querySelector('.bowl').classList.remove('is-shaking');
-          render(); shakeButton.disabled = false; saveButton.disabled = false;
-        }
-        requestAnimationFrame(animate);
-      }
-      shakeButton.addEventListener('click', shakeBowl);
       function loadImage(source) {
         return new Promise((resolve, reject) => {
-          const image = new Image(); image.onload = () => resolve(image); image.onerror = reject; image.src = source;
+          const image = new Image();
+          image.onload = () => resolve(image);
+          image.onerror = reject;
+          image.src = source;
         });
       }
       async function saveBowl() {
@@ -206,36 +161,37 @@
         const filename = (requestedName.trim() || 'my-mala-keychain-shakers').replace(/[^a-z0-9-_]+/gi, '-').replace(/^-+|-+$/g, '');
         saveButton.disabled = true;
         try {
-          // Measure the rendered ingredient boxes instead of duplicating CSS dimensions.
-          // This keeps the export faithful if the screen size or ingredient styling changes.
           const bowlBounds = dropZone.getBoundingClientRect();
-          const placedIngredients = [...dropZone.querySelectorAll('.placed')].map(element => ({
-            file: element.dataset.file,
-            bounds: element.getBoundingClientRect()
-          }));
-          const [bowlImage, ...ingredientImages] = await Promise.all([
-            loadImage('images/bowl.png'),
-            ...placedIngredients.map(({ file }) => loadImage(`images/${file}`))
-          ]);
-          const canvas = document.createElement('canvas'); canvas.width = 1800; canvas.height = 1200;
+          const canvas = document.createElement('canvas');
+          const bowlImage = await loadImage('images/bowl.png');
+          canvas.width = bowlImage.naturalWidth;
+          canvas.height = bowlImage.naturalHeight;
           const context = canvas.getContext('2d');
-          context.drawImage(bowlImage, 0, 0, canvas.width, canvas.height);
-          placedIngredients.forEach(({ bounds }, index) => {
-            const image = ingredientImages[index];
-            const boxWidth = bounds.width * canvas.width / bowlBounds.width;
-            const boxHeight = bounds.height * canvas.height / bowlBounds.height;
-            const scale = Math.min(boxWidth / image.naturalWidth, boxHeight / image.naturalHeight);
-            const width = image.naturalWidth * scale; const height = image.naturalHeight * scale;
-            const x = ((bounds.left - bowlBounds.left + bounds.width / 2) * canvas.width / bowlBounds.width) - width / 2;
-            const y = ((bounds.top - bowlBounds.top + bounds.height / 2) * canvas.height / bowlBounds.height) - height / 2;
-            context.drawImage(image, x, y, width, height);
+          context.drawImage(bowlImage, 0, 0);
+          const ingredients = [...dropZone.querySelectorAll('.placed')].map(element => {
+            const bounds = element.getBoundingClientRect();
+            return {
+              file: element.dataset.file,
+              x: (bounds.left - bowlBounds.left) / bowlBounds.width * canvas.width,
+              y: (bounds.top - bowlBounds.top) / bowlBounds.height * canvas.height,
+              width: bounds.width / bowlBounds.width * canvas.width,
+              height: bounds.height / bowlBounds.height * canvas.height
+            };
           });
-          canvas.toBlob(blob => {
-            if (!blob) { notify('The image could not be saved. Please try again.'); saveButton.disabled = false; return; }
-            const link = document.createElement('a'); link.href = URL.createObjectURL(blob); link.download = `${filename || 'my-mala-keychain-shakers'}.png`;
-            document.body.append(link); link.click(); link.remove(); URL.revokeObjectURL(link.href);
-            notify('Your bowl image is downloading.'); saveButton.disabled = false;
-          }, 'image/png');
+          for (const ingredient of ingredients) {
+            const image = await loadImage(`images/${ingredient.file}`);
+            const scale = Math.min(ingredient.width / image.naturalWidth, ingredient.height / image.naturalHeight);
+            const width = image.naturalWidth * scale;
+            const height = image.naturalHeight * scale;
+            const x = ingredient.x + (ingredient.width - width) / 2;
+            const y = ingredient.y + (ingredient.height - height) / 2;
+            context.drawImage(image, x, y, width, height);
+          }
+          const blob = await new Promise(resolve => canvas.toBlob(resolve, 'image/png'));
+          if (!blob) throw new Error('The browser could not create the image.');
+          const link = document.createElement('a'); link.href = URL.createObjectURL(blob); link.download = `${filename || 'my-mala-keychain-shakers'}.png`;
+          document.body.append(link); link.click(); link.remove(); URL.revokeObjectURL(link.href);
+          notify('Your bowl image is downloading.'); saveButton.disabled = false;
         } catch (error) { console.error(error); notify('The image could not be saved. Please try again.'); saveButton.disabled = false; }
       }
       saveButton.addEventListener('click', saveBowl);
