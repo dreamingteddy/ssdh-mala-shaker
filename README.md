@@ -16,6 +16,17 @@ Then open [http://127.0.0.1:5000](http://127.0.0.1:5000).
 
 Choose up to six ingredients by clicking a card, or drag a card into the bowl. Click an ingredient in the bowl to remove it. The **Save** button renders and downloads a named PNG directly in the browser.
 
+## Run with Docker
+
+Build and start the container:
+
+```sh
+docker build -t build-a-bowl .
+docker run --rm -p 5000:5000 build-a-bowl
+```
+
+Then open [http://127.0.0.1:5000](http://127.0.0.1:5000).
+
 ## Publish with GitHub Pages
 
 Create a GitHub repository and, from this directory, run:
