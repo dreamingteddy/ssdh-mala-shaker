@@ -1,0 +1,244 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#f4f0e5" />
+    <title>Build a Bowl</title>
+    <style>
+      :root { --ink: #26221e; --paper: #f7f3eb; --red: #9f221f; --gold: #e9bd61; --line: #ddd4c5; }
+      * { box-sizing: border-box; }
+      body { margin: 0; min-width: 320px; color: var(--ink); background: var(--paper); font-family: Georgia, 'Times New Roman', serif; }
+      button { font: inherit; }
+      .page { max-width: 1450px; min-height: 100vh; margin: 0 auto; padding: 26px 4vw 36px; }
+      header { display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid var(--line); padding-bottom: 20px; }
+      .wordmark { font-size: clamp(1.25rem, 2vw, 1.75rem); font-weight: 700; letter-spacing: -.04em; }
+      .counter { font-family: ui-sans-serif, system-ui, sans-serif; font-size: .8rem; letter-spacing: .08em; text-transform: uppercase; }
+      .counter strong { display: inline-grid; place-items: center; width: 28px; height: 28px; margin-left: 7px; border-radius: 50%; background: var(--ink); color: white; }
+      main { display: grid; grid-template-columns: minmax(260px, 1fr) minmax(420px, 720px) minmax(260px, 1fr); gap: 0; align-items: start; padding-top: clamp(35px, 7vh, 88px); }
+      .eyebrow { margin: 0 0 14px; color: #8d7e6e; font-family: ui-sans-serif, system-ui, sans-serif; font-size: .7rem; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; }
+      h1 { max-width: 520px; margin: 0; font-size: clamp(3.2rem, 7vw, 7.3rem); line-height: .86; letter-spacing: -.075em; font-weight: 500; }
+      .intro { max-width: 360px; margin: 25px 0 28px; color: #685f57; font: 1rem/1.55 ui-sans-serif, system-ui, sans-serif; }
+      .ingredients { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 9px; max-width: 270px; }
+      .ingredient { position: relative; aspect-ratio: 1; padding: 4px; overflow: hidden; cursor: grab; border: 1px solid var(--line); border-radius: 12px; background: #fffdfa; transition: transform .18s, border-color .18s, box-shadow .18s; touch-action: none; }
+      .ingredient:hover { transform: translateY(-3px); border-color: var(--ink); box-shadow: 0 7px 15px #30251717; }
+      .ingredient[aria-pressed="true"] { border: 2px solid var(--red); background: #fff3ec; }
+      .ingredient img { width: 100%; height: 100%; object-fit: contain; pointer-events: none; }
+      .ingredient span { position: absolute; inset: auto 4px 4px auto; display: none; width: 17px; height: 17px; border-radius: 50%; background: var(--red); color: white; font-family: Arial, sans-serif; font-size: 12px; line-height: 17px; }
+      .ingredient[aria-pressed="true"] span { display: block; }
+      .page-heading { grid-column: 1 / -1; margin-bottom: 1.35rem; text-align: center; }
+      .page-heading h1 { max-width: none; margin: 0; font-size: clamp(2.25rem, 4.4vw, 4.85rem); line-height: .9; }
+      .page-heading .intro { max-width: none; margin: 16px auto 0; white-space: nowrap; }
+      .bowl-panel { position: relative; grid-column: 2; min-height: 0; }
+      .action-panel { display: flex; flex-direction: column; gap: 16px; grid-column: 3; align-self: center; justify-self: start; padding-left: clamp(16px, 3vw, 48px); }
+      .shake-button { min-width: 126px; padding: 15px 23px; cursor: pointer; border: 0; border-radius: 999px; background: var(--red); color: #fffaf1; box-shadow: 0 8px 0 #721714, 0 14px 22px #72171433; font: 700 .8rem ui-sans-serif, system-ui, sans-serif; letter-spacing: .12em; text-transform: uppercase; transition: transform .16s, box-shadow .16s; }
+      .shake-button:hover { transform: translateY(-2px); box-shadow: 0 10px 0 #721714, 0 16px 24px #72171433; }
+      .shake-button:active { transform: translateY(6px); box-shadow: 0 2px 0 #721714, 0 6px 12px #72171422; }
+      .shake-button:disabled { cursor: wait; opacity: .65; }
+      .save-button { min-width: 126px; padding: 13px 23px; cursor: pointer; border: 1px solid var(--ink); border-radius: 999px; background: transparent; color: var(--ink); font: 700 .8rem ui-sans-serif, system-ui, sans-serif; letter-spacing: .12em; text-transform: uppercase; transition: color .16s, background .16s; }
+      .save-button:hover { background: var(--ink); color: white; }
+      .save-button:disabled { cursor: wait; opacity: .6; }
+      .drop-zone { position: relative; z-index: 1; width: min(100%, 720px); aspect-ratio: 1.5; margin: 0 auto; display: grid; place-items: center; border-radius: 48%; outline: 2px dashed transparent; outline-offset: 12px; transition: outline-color .2s, background .2s; }
+      .drop-zone.is-over { outline-color: var(--red); background: #a3242010; }
+      .bowl { width: 100%; height: 100%; object-fit: contain; filter: drop-shadow(0 22px 12px #51432e29); user-select: none; pointer-events: none; }
+      .bowl-copy { position: absolute; z-index: 3; top: 37%; left: 50%; width: 45%; transform: translate(-50%, -50%); color: #fff6e9; font-family: ui-sans-serif, system-ui, sans-serif; font-size: clamp(.68rem, 1.3vw, .88rem); font-weight: 700; text-align: center; letter-spacing: .08em; text-shadow: 0 1px 2px #5b100d; text-transform: uppercase; pointer-events: none; }
+      .bowl-copy.hidden { display: none; }
+      .placed { position: absolute; z-index: 2; width: 22%; height: 27%; object-fit: contain; cursor: grab; filter: drop-shadow(0 5px 3px #61150e33); transform: translate(-50%, -50%); touch-action: none; user-select: none; }
+      .placed:hover { z-index: 4; filter: drop-shadow(0 7px 4px #61150e55); }
+      .placed.is-moving { z-index: 6; cursor: grabbing; filter: drop-shadow(0 10px 6px #61150e66); }
+      .bowl.is-shaking { animation: bowl-shake .72s ease-in-out; }
+      .placed.is-shaking { animation: ingredient-jiggle .12s linear infinite; }
+      @keyframes bowl-shake { 0%, 100% { transform: translateY(0) rotate(0); } 12% { transform: translateY(-16px) rotate(-1.1deg); } 25% { transform: translateY(9px) rotate(1deg); } 38% { transform: translateY(-13px) rotate(-.8deg); } 52% { transform: translateY(8px) rotate(.7deg); } 68% { transform: translateY(-6px) rotate(-.4deg); } 84% { transform: translateY(3px) rotate(.2deg); } }
+      @keyframes ingredient-jiggle { 0%, 100% { transform: translate(-50%, -50%) rotate(-3deg); } 50% { transform: translate(-50%, -50%) rotate(3deg); } }
+      .actions { position: absolute; z-index: 5; right: 1%; bottom: 2%; display: flex; align-items: center; gap: 10px; }
+      .action { padding: 10px 15px; cursor: pointer; border: 1px solid var(--ink); border-radius: 999px; background: var(--paper); color: var(--ink); font: 700 .72rem ui-sans-serif, system-ui, sans-serif; letter-spacing: .08em; text-transform: uppercase; }
+      .action:hover { background: var(--ink); color: white; }
+      .hint { position: absolute; z-index: 5; left: 5%; bottom: 4%; margin: 0; color: #806f5b; font: .74rem/1.3 ui-sans-serif, system-ui, sans-serif; }
+      .toast { position: fixed; z-index: 10; left: 50%; bottom: 28px; padding: 11px 17px; border-radius: 999px; background: var(--ink); color: white; font: .82rem ui-sans-serif, system-ui, sans-serif; opacity: 0; transform: translate(-50%, 12px); pointer-events: none; transition: opacity .2s, transform .2s; }
+      .toast.show { opacity: 1; transform: translate(-50%, 0); }
+      @media (max-width: 1080px) { main { grid-template-columns: minmax(200px, .8fr) minmax(420px, 1.5fr) minmax(200px, .8fr); } }
+      @media (max-width: 780px) { .page { padding-inline: 22px; } main { grid-template-columns: 1fr; gap: 24px; } .page-heading { order: -2; } .page-heading .intro { white-space: normal; } .bowl-panel { grid-column: auto; order: -1; min-height: 0; } .action-panel { grid-column: auto; justify-self: center; padding-left: 0; } .page-heading h1 { font-size: clamp(2.2rem, 11vw, 3.6rem); } .ingredients { max-width: none; grid-template-columns: repeat(5, 1fr); } .hint { display: none; } }
+      @media (max-width: 430px) { .ingredients { grid-template-columns: repeat(5, 1fr); } .bowl-panel { min-height: 330px; } }
+    </style>
+  </head>
+  <body>
+    <div class="page">
+      <header><div class="wordmark">干麻辣</div><div class="counter">In your bowl <strong id="count">0</strong>/6</div></header>
+      <main>
+        <section class="page-heading">
+          <h1 id="title">Build your own MALA keychain shakers!</h1>
+          <p class="intro">Pick up to six favorites. Drag them into the bowl, or just tap an ingredient to add it.</p>
+        </section>
+        <section class="ingredient-panel" aria-labelledby="title">
+          <p class="eyebrow">The ingredient bar</p>
+          <div class="ingredients" id="ingredients" aria-label="Available ingredients"></div>
+        </section>
+        <section class="bowl-panel" aria-label="Your bowl">
+          <div class="drop-zone" id="dropZone" tabindex="0" aria-label="Drop ingredients here">
+            <img class="bowl" src="images/bowl.png" alt="Red serving bowl" />
+            <p class="bowl-copy" id="bowlCopy">Drop ingredients here</p>
+          </div>
+          <p class="hint">Drag an ingredient into the bowl · drag again to rearrange · double-click to remove</p>
+          <div class="actions"><button class="action" id="clear" type="button">Clear bowl</button></div>
+        </section>
+        <aside class="action-panel" aria-label="Bowl action">
+          <button class="shake-button" id="shake" type="button">Shake</button>
+          <button class="save-button" id="save" type="button">Save</button>
+        </aside>
+      </main>
+    </div>
+    <div class="toast" id="toast" role="status" aria-live="polite"></div>
+    <script>
+      const items = ['IMG_0781.PNG','IMG_0783.png','IMG_0786.png','IMG_0794.PNG','IMG_0803.png','IMG_0805.png','IMG_0816.PNG','IMG_0834.png','IMG_0835.png','IMG_0836.png'];
+      const labels = items.map((file, i) => `Ingredient ${String(i + 1).padStart(2, '0')}`);
+      const selected = new Set();
+      const positions = new Map();
+      const grid = document.querySelector('#ingredients');
+      const dropZone = document.querySelector('#dropZone');
+      const count = document.querySelector('#count');
+      const bowlCopy = document.querySelector('#bowlCopy');
+      const toast = document.querySelector('#toast');
+      const shakeButton = document.querySelector('#shake');
+      const saveButton = document.querySelector('#save');
+      let toastTimer;
+
+      function notify(message) { toast.textContent = message; toast.classList.add('show'); clearTimeout(toastTimer); toastTimer = setTimeout(() => toast.classList.remove('show'), 2200); }
+      // A deliberately compact inner ellipse so ingredients stay on the bowl's red surface.
+      // Top stays at 28.5%; the roomy lower half reaches to 63% of the bowl panel.
+      const bowlArea = { centerX: 50, centerY: 45.75, radiusX: 21, radiusY: 17.25 };
+      const defaultPositions = [[45, 34], [55, 34], [50, 39], [42, 42], [58, 42], [50, 30]];
+      function clampPosition(x, y) {
+        const dx = x - bowlArea.centerX;
+        const dy = y - bowlArea.centerY;
+        const distance = Math.sqrt((dx / bowlArea.radiusX) ** 2 + (dy / bowlArea.radiusY) ** 2);
+        if (distance <= 1) return { x, y };
+        return { x: bowlArea.centerX + dx / distance, y: bowlArea.centerY + dy / distance };
+      }
+      function positionFromPointer(event) {
+        const rect = dropZone.getBoundingClientRect();
+        return clampPosition(((event.clientX - rect.left) / rect.width) * 100, ((event.clientY - rect.top) / rect.height) * 100);
+      }
+      function render() {
+        count.textContent = selected.size;
+        bowlCopy.classList.toggle('hidden', selected.size > 0);
+        document.querySelectorAll('.ingredient').forEach(button => button.setAttribute('aria-pressed', selected.has(button.dataset.file)));
+        dropZone.querySelectorAll('.placed').forEach(node => node.remove());
+        [...selected].forEach(file => {
+          const position = positions.get(file);
+          const image = document.createElement('img');
+          image.src = `images/${file}`; image.alt = `${labels[items.indexOf(file)]}; drag to rearrange, double-click to remove`; image.className = 'placed'; image.dataset.file = file; image.draggable = false;
+          image.style.left = `${position.x}%`; image.style.top = `${position.y}%`;
+          image.addEventListener('dblclick', () => { selected.delete(file); positions.delete(file); render(); });
+          image.addEventListener('pointerdown', event => {
+            event.preventDefault(); image.setPointerCapture(event.pointerId); image.classList.add('is-moving');
+            const move = moveEvent => { const next = positionFromPointer(moveEvent); positions.set(file, next); image.style.left = `${next.x}%`; image.style.top = `${next.y}%`; };
+            const finish = () => { image.classList.remove('is-moving'); image.removeEventListener('pointermove', move); image.removeEventListener('pointerup', finish); image.removeEventListener('pointercancel', finish); };
+            image.addEventListener('pointermove', move); image.addEventListener('pointerup', finish); image.addEventListener('pointercancel', finish);
+          });
+          dropZone.append(image);
+        });
+      }
+      function add(file, position) {
+        if (selected.has(file)) return;
+        if (selected.size >= 6) { notify('Your bowl is full — remove one to make room.'); return; }
+        selected.add(file); positions.set(file, position || { x: defaultPositions[selected.size - 1][0], y: defaultPositions[selected.size - 1][1] }); render();
+      }
+      items.forEach((file, i) => {
+        const button = document.createElement('button');
+        button.type = 'button'; button.className = 'ingredient'; button.dataset.file = file; button.draggable = true;
+        button.setAttribute('aria-label', `Add ${labels[i]}`); button.setAttribute('aria-pressed', 'false');
+        button.innerHTML = `<img src="images/${file}" alt="" /><span aria-hidden="true">✓</span>`;
+        button.addEventListener('click', () => { if (selected.has(file)) { selected.delete(file); positions.delete(file); render(); } else { add(file); } });
+        button.addEventListener('dragstart', event => { event.dataTransfer.setData('text/plain', file); event.dataTransfer.effectAllowed = 'copy'; });
+        grid.append(button);
+      });
+      ['dragenter', 'dragover'].forEach(type => dropZone.addEventListener(type, event => { event.preventDefault(); dropZone.classList.add('is-over'); }));
+      ['dragleave', 'drop'].forEach(type => dropZone.addEventListener(type, event => { event.preventDefault(); dropZone.classList.remove('is-over'); }));
+      dropZone.addEventListener('drop', event => { const file = event.dataTransfer.getData('text/plain'); if (items.includes(file)) add(file, positionFromPointer(event)); });
+      document.querySelector('#clear').addEventListener('click', () => { if (selected.size) { selected.clear(); positions.clear(); render(); } });
+      function bottomOfOval(x) {
+        const horizontal = Math.min(1, Math.abs((x - bowlArea.centerX) / bowlArea.radiusX));
+        return bowlArea.centerY + bowlArea.radiusY * Math.sqrt(1 - horizontal ** 2) - 1.5;
+      }
+      function shakeBowl() {
+        if (!selected.size) { notify('Add an ingredient before shaking the bowl.'); return; }
+        shakeButton.disabled = true;
+        saveButton.disabled = true;
+        document.querySelector('.bowl').classList.add('is-shaking');
+        const placed = [...dropZone.querySelectorAll('.placed')];
+        const start = new Map([...selected].map(file => [file, { ...positions.get(file) }]));
+        const targets = new Map([...selected].map(file => {
+          const initial = start.get(file);
+          return [file, { x: initial.x, y: bottomOfOval(initial.x) }];
+        }));
+        placed.forEach(image => image.classList.add('is-shaking'));
+        const duration = 980;
+        const startedAt = performance.now();
+        function animate(now) {
+          const progress = Math.min(1, (now - startedAt) / duration);
+          const fall = Math.max(0, (progress - .24) / .76);
+          const eased = 1 - (1 - fall) ** 3;
+          placed.forEach((image, index) => {
+            const file = image.dataset.file;
+            const from = start.get(file); const to = targets.get(file);
+            const wobble = (1 - progress) * Math.sin(progress * 52 + index * 2.3);
+            const x = from.x + (to.x - from.x) * eased + wobble * 1.15;
+            const y = from.y + (to.y - from.y) * eased + wobble * .7 - (1 - progress) * 1.8;
+            image.style.left = `${x}%`; image.style.top = `${y}%`;
+          });
+          if (progress < 1) { requestAnimationFrame(animate); return; }
+          targets.forEach((position, file) => positions.set(file, position));
+          document.querySelector('.bowl').classList.remove('is-shaking');
+          render(); shakeButton.disabled = false; saveButton.disabled = false;
+        }
+        requestAnimationFrame(animate);
+      }
+      shakeButton.addEventListener('click', shakeBowl);
+      function loadImage(source) {
+        return new Promise((resolve, reject) => {
+          const image = new Image(); image.onload = () => resolve(image); image.onerror = reject; image.src = source;
+        });
+      }
+      async function saveBowl() {
+        if (!selected.size) { notify('Add an ingredient before saving.'); return; }
+        const requestedName = window.prompt('Name your saved bowl image:', 'my-mala-keychain-shakers');
+        if (requestedName === null) return;
+        const filename = (requestedName.trim() || 'my-mala-keychain-shakers').replace(/[^a-z0-9-_]+/gi, '-').replace(/^-+|-+$/g, '');
+        saveButton.disabled = true;
+        try {
+          // Measure the rendered ingredient boxes instead of duplicating CSS dimensions.
+          // This keeps the export faithful if the screen size or ingredient styling changes.
+          const bowlBounds = dropZone.getBoundingClientRect();
+          const placedIngredients = [...dropZone.querySelectorAll('.placed')].map(element => ({
+            file: element.dataset.file,
+            bounds: element.getBoundingClientRect()
+          }));
+          const [bowlImage, ...ingredientImages] = await Promise.all([
+            loadImage('images/bowl.png'),
+            ...placedIngredients.map(({ file }) => loadImage(`images/${file}`))
+          ]);
+          const canvas = document.createElement('canvas'); canvas.width = 1800; canvas.height = 1200;
+          const context = canvas.getContext('2d');
+          context.drawImage(bowlImage, 0, 0, canvas.width, canvas.height);
+          placedIngredients.forEach(({ bounds }, index) => {
+            const image = ingredientImages[index];
+            const boxWidth = bounds.width * canvas.width / bowlBounds.width;
+            const boxHeight = bounds.height * canvas.height / bowlBounds.height;
+            const scale = Math.min(boxWidth / image.naturalWidth, boxHeight / image.naturalHeight);
+            const width = image.naturalWidth * scale; const height = image.naturalHeight * scale;
+            const x = ((bounds.left - bowlBounds.left + bounds.width / 2) * canvas.width / bowlBounds.width) - width / 2;
+            const y = ((bounds.top - bowlBounds.top + bounds.height / 2) * canvas.height / bowlBounds.height) - height / 2;
+            context.drawImage(image, x, y, width, height);
+          });
+          canvas.toBlob(blob => {
+            if (!blob) { notify('The image could not be saved. Please try again.'); saveButton.disabled = false; return; }
+            const link = document.createElement('a'); link.href = URL.createObjectURL(blob); link.download = `${filename || 'my-mala-keychain-shakers'}.png`;
+            document.body.append(link); link.click(); link.remove(); URL.revokeObjectURL(link.href);
+            notify('Your bowl image is downloading.'); saveButton.disabled = false;
+          }, 'image/png');
+        } catch (error) { console.error(error); notify('The image could not be saved. Please try again.'); saveButton.disabled = false; }
+      }
+      saveButton.addEventListener('click', saveBowl);
+    </script>
+  </body>
+</html>
