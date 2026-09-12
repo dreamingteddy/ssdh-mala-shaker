@@ -48,6 +48,7 @@
       .hint { width: 92%; margin: clamp(35px, 7vh, 88px) 0 0; color: #806f5b; font: .74rem/1.3 ui-sans-serif, system-ui, sans-serif; text-align: center; }
       .toast { position: fixed; z-index: 10; left: 50%; bottom: 28px; padding: 11px 17px; border-radius: 999px; background: var(--ink); color: white; font: .82rem ui-sans-serif, system-ui, sans-serif; opacity: 0; transform: translate(-50%, 12px); pointer-events: none; transition: opacity .2s, transform .2s; }
       .toast.show { opacity: 1; transform: translate(-50%, 0); }
+      footer { margin-top: 40px; color: #806f5b; font: .72rem ui-sans-serif, system-ui, sans-serif; text-align: center; }
       @media (max-width: 1080px) { main { grid-template-columns: minmax(200px, .8fr) minmax(420px, 1.5fr) minmax(200px, .8fr); } }
       @media (max-width: 780px) { .page { padding-inline: 22px; } main { grid-template-columns: 1fr; gap: 24px; } .page-heading { order: -2; } .page-heading .intro { white-space: normal; } .bowl-panel { grid-column: auto; order: -1; min-height: 0; } .action-panel { grid-column: auto; justify-self: center; margin-top: 0; padding-left: 0; } .page-heading h1 { font-size: clamp(2.2rem, 11vw, 3.6rem); } .ingredients { max-width: none; grid-template-columns: repeat(5, 1fr); } .hint { display: block; width: 100%; margin-top: 35px; } }
       @media (max-width: 430px) { .ingredients { grid-template-columns: repeat(5, 1fr); } .bowl-panel { min-height: 330px; } }
@@ -77,6 +78,7 @@
           <button class="save-button" id="save" type="button">Save</button>
         </aside>
       </main>
+      <footer>© 2026 XDYG. All rights reserved.</footer>
     </div>
     <div class="toast" id="toast" role="status" aria-live="polite"></div>
     <script>
@@ -167,6 +169,8 @@
           canvas.width = bowlImage.naturalWidth;
           canvas.height = bowlImage.naturalHeight;
           const context = canvas.getContext('2d');
+          context.fillStyle = '#ffffff';
+          context.fillRect(0, 0, canvas.width, canvas.height);
           context.drawImage(bowlImage, 0, 0);
           const ingredients = [...dropZone.querySelectorAll('.placed')].map(element => {
             const bounds = element.getBoundingClientRect();

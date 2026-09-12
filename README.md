@@ -43,3 +43,9 @@ git push -u origin main
 In the repository’s **Settings → Pages**, select **Deploy from a branch**, then choose `main` and `/ (root)`.
 
 GitHub Pages uses `index.html` and `images/` only; `app.py` is not run there. The Flask setup above remains available for local development.
+
+## Copyright
+
+Copyright © 2026 dreamingteddy. All rights reserved.
+
+The source code, design, and included image assets are owned by dreamingteddy. No permission is granted to copy, modify, or redistribute this project or its assets without written permission.
